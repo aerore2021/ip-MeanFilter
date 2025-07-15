@@ -64,7 +64,7 @@ if {[catch {
     # Run simulation for specified time from the beginning
     # 发送完整一帧数据需要更长时间: 640*512 = 327680 pixels
     # 每个像素至少需要几个时钟周期，估计需要几毫秒
-    set run_time 5ms
+    set run_time 50ms
     puts "INFO: Running simulation for $run_time from time 0..."
     run $run_time
 

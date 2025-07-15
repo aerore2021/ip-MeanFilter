@@ -12,25 +12,25 @@ module LineBuf #(
 );
     localparam ADDR_WIDTH = $clog2(LATENCY);
     
-    logic [ADDR_WIDTH-1:0] addra = 0;
-    logic [ADDR_WIDTH-1:0] addrb = 1;
+    logic [ADDR_WIDTH-1:0] addra;
+    logic [ADDR_WIDTH-1:0] addrb;
     
     always_ff @(posedge clk) begin
         if (!rst_n) begin
-            addra <= 0;
-            addrb <= 1;
+            addra <= 'd0;
+            addrb <= 'd1;
         end 
         else if (in_valid) begin
             if (addra >= LATENCY - 1) begin
-                addra <= 0;
+                addra <= 'd0;
             end else begin
-                addra <= addra + 1;
+                addra <= addra + 'd1;
             end
 
             if (addrb >= LATENCY - 1) begin
-                addrb <= 0;
+                addrb <= 'd0;
             end else begin
-                addrb <= addrb + 1;
+                addrb <= addrb + 'd1;
             end
         end
     end

@@ -5,8 +5,8 @@ module tb_MF();
     // 参数定义
     parameter DATA_WIDTH = 8;
     parameter WINDOW_SIZE = 3;
-    parameter FRAME_WIDTH = 640;
-    parameter FRAME_HEIGHT = 512;
+    parameter FRAME_WIDTH = 20;
+    parameter FRAME_HEIGHT = 20;
     parameter CLK_PERIOD = 10;  // 10ns = 100MHz
     
     // 信号定义
@@ -113,10 +113,10 @@ module tb_MF();
     endtask
     
     // 监控输出
-    always @(posedge clk) begin
-        if (m_axis_tvalid && m_axis_tready) begin
-            $display("Output: data=%d, last=%b, user=%b", m_axis_tdata, m_axis_tlast, m_axis_tuser);
-        end
-    end
+    // always @(posedge clk) begin
+    //     if (m_axis_tvalid && m_axis_tready) begin
+    //         $display("Output: data=%d, last=%b, user=%b", m_axis_tdata, m_axis_tlast, m_axis_tuser);
+    //     end
+    // end
     
 endmodule

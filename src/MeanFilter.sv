@@ -38,8 +38,8 @@ module MeanFilter #(
                         .clk(clk),
                         .rst_n(rst_n),
                         .in_valid(s_axis_tvalid),
-                        .data_in(data_linebuf[linebuf_idx-1]),
-                        .data_out(data_linebuf[linebuf_idx])
+                        .data_in(data_linebuf[linebuf_idx]),
+                        .data_out(data_linebuf[linebuf_idx+1])
                     );
         end
     endgenerate
@@ -141,7 +141,7 @@ module MeanFilter #(
     assign m_axis_tlast = m_fire && (out_hcnt == FRAME_WIDTH - 1);
     assign m_axis_tuser = m_fire && (out_hcnt == 0) && (out_vcnt == 0);
     assign m_axis_tdata = sum_data / WINDOW_NUM;
-    assign s_axis_tready = initial_delayed && m_axis_tready;
+    assign s_axis_tready = m_axis_tready;
     // ---------------------- Output Logic End ---------------------- //
 
 endmodule
