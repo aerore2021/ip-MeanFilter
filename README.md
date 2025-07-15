@@ -32,12 +32,16 @@ MF_project/
 │   └── LineBuf.sv            # 行缓冲模块
 ├── sim/
 │   └── tb_MF.sv              # 测试台
+├── create_meanfilter_project.tcl   # 🆕 项目创建脚本（分离式）
+├── run_meanfilter_build.tcl        # 🆕 构建脚本（分离式）
+├── create_meanfilter_auto.tcl      # 完整自动化脚本（包含综合和仿真）
 ├── create_project.tcl        # 完整项目创建脚本（包含BRAM IP生成）
 ├── generate_multiple_bram_ip.tcl  # 多种BRAM IP生成脚本
 ├── run_setup.bat             # Windows运行脚本
 ├── run_setup.sh              # Linux运行脚本
 ├── cleanup.bat               # Windows清理脚本
 ├── cleanup.sh                # Linux清理脚本
+├── TCL_USAGE_GUIDE.md        # 🆕 TCL脚本使用指南
 └── README.md                 # 本说明文件
 ```
 
@@ -90,19 +94,54 @@ MF_project/
 
 ## 使用方法
 
-### 根据Vivado版本选择合适的脚本
+### 推荐使用方法：分离式TCL脚本
 
-#### Vivado 2021.1 (推荐)
+我们提供了分离式TCL脚本，将工程创建和构建过程分离，提供更好的模块化和灵活性：
+
+#### 方法1：使用shell脚本（推荐）
+```bash
+./run_meanfilter.sh
+```
+
+#### 方法2：手动执行两个步骤
+```bash
+# 步骤1：创建项目
+vivado -mode tcl -source create_meanfilter_project.tcl
+
+# 步骤2：构建项目 (综合和仿真)
+vivado -mode tcl -source run_meanfilter_build.tcl
+```
+
+#### 优势：
+- **模块化**: 项目创建和构建分离，便于维护
+- **重用性**: 可以重复运行构建脚本而无需重新创建项目
+- **灵活性**: 可以只运行项目创建部分，然后在GUI中手动构建
+- **调试友好**: 构建失败时只需重新运行构建脚本
+
+详细说明请参考：[`TCL_USAGE_GUIDE.md`](TCL_USAGE_GUIDE.md)
+
+### 其他可用脚本（高级用户）
+
+如果您需要使用其他版本的脚本，以下选项仍然可用：
+
+#### 完整自动化脚本（包含综合和仿真）
+```bash
+vivado -mode tcl -source create_meanfilter_auto.tcl
+```
+
+#### 根据Vivado版本选择的脚本
+
+##### Vivado 2021.1
 ```bash
 vivado -mode tcl -source create_project_v2021.tcl
 ```
 
-#### Vivado 2019.2-2022.x (最新版本)
+##### Vivado 2019.2-2022.x
 ```bash
 vivado -mode tcl -source create_project.tcl
 ```
 
-#### 简单测试版本 (所有版本)
+##### 简单测试版本
 ```bash
 vivado -mode tcl -source create_project_simple.tcl
 ```

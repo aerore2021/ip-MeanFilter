@@ -1,6 +1,6 @@
-# MeanFilter Project Dedicated TCL Script - Auto Mode
+# MeanFilter Project Creation Script
 # Compatible with Vivado 2021.1 and above
-# Usage: vivado -mode tcl -source create_meanfilter_auto.tcl
+# Usage: vivado -mode tcl -source create_meanfilter_project.tcl
 # Author: GitHub Copilot
 # Date: July 15, 2025
 
@@ -123,44 +123,11 @@ if {[llength $ip_files] > 0} {
 
 puts "INFO: Project setup completed"
 
-# # Save project - Vivado 2021.1 compatible
-# save_project_as -name $project_name -dir $project_dir/$project_name -force
-
 puts "=========================================="
 puts "MeanFilter Project Created Successfully!"
 puts "=========================================="
-
-# Auto-run synthesis and simulation
-puts "Starting Synthesis..."
-launch_runs synth_1
-wait_on_run synth_1
-
-# Check synthesis results
-if {[get_property PROGRESS [get_runs synth_1]] == "100%"} {
-    puts "SUCCESS: Synthesis completed successfully!"
-    puts "Synthesis Status: [get_property STATUS [get_runs synth_1]]"
-    
-    # Open synthesis run
-    open_run synth_1 -name synth_1
-    
-    # Run simulation
-    puts "Starting Simulation..."
-    launch_simulation
-    
-    puts "=========================================="
-    puts "Project Setup Complete!"
-    puts "- Synthesis: PASSED"
-    puts "- Simulation: LAUNCHED"
-    puts "- GUI will open automatically"
-    puts "=========================================="
-    
-    # Open GUI
-    # start_gui
-    
-} else {
-    puts "ERROR: Synthesis failed!"
-    puts "Status: [get_property STATUS [get_runs synth_1]]"
-    puts "Please check synthesis logs for details."
-}
+puts "Project is ready for synthesis and simulation."
+puts "Run 'vivado -mode tcl -source run_meanfilter_build.tcl' to build the project."
+puts "=========================================="
 
 puts "Script execution completed."

@@ -27,32 +27,19 @@ module MeanFilter #(
 
     // ---------------------- Line Buffer Start ---------------------- //
     logic [DATA_WIDTH-1:0] data_linebuf [0:WINDOW_SIZE-1];
+    assign data_linebuf[0] = s_axis_tdata;
     generate
         for (genvar linebuf_idx = 0; linebuf_idx < WINDOW_SIZE; linebuf_idx++) begin: LineBuf_gen
-            if (linebuf_idx == 0) begin
-                LineBuf #(
-                            .DATA_WIDTH(DATA_WIDTH),
-                            .LATENCY(WINDOW_SIZE)
-                        ) linebuf_inst (
-                            .clk(clk),
-                            .rst_n(rst_n),
-                            .in_valid(s_axis_tvalid),
-                            .data_in(s_axis_tdata),
-                            .data_out(data_linebuf[0])
-                        );
-            end
-            else begin
-                LineBuf #(
-                            .DATA_WIDTH(DATA_WIDTH),
-                            .LATENCY(WINDOW_SIZE)
-                        ) linebuf_inst (
-                            .clk(clk),
-                            .rst_n(rst_n),
-                            .in_valid(in_valid),
-                            .data_in(data_linebuf[linebuf_idx-1]),
-                            .data_out(data_linebuf[linebuf_idx])
-                        );
-            end
+            LineBuf #(
+                        .DATA_WIDTH(DATA_WIDTH),
+                        .LATENCY(FRAME_WIDTH)
+                    ) linebuf_inst (
+                        .clk(clk),
+                        .rst_n(rst_n),
+                        .in_valid(in_valid),
+                        .data_in(data_linebuf[linebuf_idx-1]),
+                        .data_out(data_linebuf[linebuf_idx])
+                    );
         end
     endgenerate
     // ---------------------- Line Buffer End ---------------------- //
@@ -72,8 +59,9 @@ module MeanFilter #(
     generate
         for (genvar linebuf_idx = 0; linebuf_idx < WINDOW_SIZE; linebuf_idx++) begin
             AdderTree #(
-                          .DATA_WIDTH(LINE_SUM_WIDTH),
-                          .DATA_NUM(WINDOW_SIZE)
+                          .DATA_IN_WIDTH(DATA_WIDTH),
+                          .DATA_NUM(WINDOW_SIZE),
+                          .DATA_OUT_WIDTH(LINE_SUM_WIDTH)
                       ) adder_tree_inst (
                           .clk(clk),
                           .rst_n(rst_n),
@@ -86,8 +74,9 @@ module MeanFilter #(
     localparam int SUM_WIDTH = $clog2(WINDOW_NUM) + DATA_WIDTH;
     logic [SUM_WIDTH-1:0] sum_data;
     AdderTree #(
-                  .DATA_WIDTH(SUM_WIDTH),
-                  .DATA_NUM(WINDOW_SIZE)
+                  .DATA_IN_WIDTH(LINE_SUM_WIDTH),
+                  .DATA_NUM(WINDOW_SIZE),
+                  .DATA_OUT_WIDTH(SUM_WIDTH)
               ) adder_tree_sum_inst (
                   .clk(clk),
                   .rst_n(rst_n),
@@ -159,16 +148,21 @@ endmodule
 
 
 module AdderTree #(
-        parameter DATA_WIDTH = 8,
-        parameter DATA_NUM = 3
+        parameter DATA_IN_WIDTH = 8,
+        parameter DATA_NUM = 3,
+        parameter DATA_OUT_WIDTH = 8
     ) (
         input   clk,
         input   rst_n,
-        input   [DATA_WIDTH-1:0] data_in[0:DATA_NUM-1],
-        output  [DATA_WIDTH-1:0] data_out
+        input   [DATA_IN_WIDTH-1:0] data_in[0:DATA_NUM-1],
+        output  [DATA_OUT_WIDTH-1:0] data_out
     );
     localparam int SUM_TOTAL_STAGES = $clog2(DATA_NUM);
-
+    function integer min_int(input integer a, input integer b);
+        begin
+            min_int = (a < b) ? a : b;
+        end
+    endfunction
     function integer get_pruned_number(input integer inv_level, input integer depth, input integer max_leaves);
         begin : calculate_number
             integer threshold;
@@ -182,7 +176,7 @@ module AdderTree #(
         end
     endfunction
 
-    logic [DATA_WIDTH-1:0] sum_data[0:SUM_TOTAL_STAGES-1];
+    logic [DATA_OUT_WIDTH-1:0] sum_data[0:SUM_TOTAL_STAGES-1];
 
     always_ff @(posedge clk) begin
         for (int sum_stages = 0; sum_stages < SUM_TOTAL_STAGES; sum_stages++) begin // 每一级的计算
