@@ -7,3 +7,4 @@ ip
 constraints
 MeanFilter_project.srcs
 MeanFilter_project.sim
+out.txt

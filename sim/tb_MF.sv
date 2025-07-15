@@ -12,7 +12,6 @@ module tb_MF();
     // 信号定义
     logic clk;
     logic rst_n;
-    logic in_valid;
     logic [DATA_WIDTH-1:0] s_axis_tdata;
     logic s_axis_tvalid;
     logic s_axis_tlast;
@@ -46,7 +45,6 @@ module tb_MF();
     ) dut (
         .clk(clk),
         .rst_n(rst_n),
-        .in_valid(in_valid),
         .s_axis_tdata(s_axis_tdata),
         .s_axis_tvalid(s_axis_tvalid),
         .s_axis_tlast(s_axis_tlast),
@@ -62,7 +60,6 @@ module tb_MF();
     // 测试激励
     initial begin
         // 初始化信号
-        in_valid = 0;
         s_axis_tdata = 0;
         s_axis_tvalid = 0;
         s_axis_tlast = 0;
@@ -102,7 +99,6 @@ module tb_MF();
                 s_axis_tvalid = 1;
                 s_axis_tlast = (col == FRAME_WIDTH - 1);
                 s_axis_tuser = (row == 0 && col == 0);
-                in_valid = 1;
                 
                 // 等待握手
                 while (!s_axis_tready) @(posedge clk);
@@ -114,7 +110,6 @@ module tb_MF();
         s_axis_tvalid = 0;
         s_axis_tlast = 0;
         s_axis_tuser = 0;
-        in_valid = 0;
     endtask
     
     // 监控输出

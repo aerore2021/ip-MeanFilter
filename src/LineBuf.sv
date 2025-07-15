@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module LineBuf #(
     DATA_WIDTH = 8,
     LATENCY = 0

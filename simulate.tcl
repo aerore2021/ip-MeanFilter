@@ -37,8 +37,9 @@ puts "MeanFilter CLI Simulation"
 puts "=========================================="
 
 # Configure simulation settings
-set_property -name {xsim.simulate.runtime} -value {1000ns} -objects [get_filesets sim_1]
+set_property -name {xsim.simulate.runtime} -value {1us} -objects [get_filesets sim_1]
 set_property -name {xsim.simulate.log_all_signals} -value {true} -objects [get_filesets sim_1]
+set_property -name {xsim.simulate.saif} -value {} -objects [get_filesets sim_1]
 
 # Start simulation in batch mode
 puts "INFO: Starting simulation in batch mode..."
@@ -48,18 +49,28 @@ if {[catch {
     # Configure VCD output
     set vcd_file "tb_MF_simulation.vcd"
     puts "INFO: Configuring VCD output to: $vcd_file"
-      # Open VCD file for writing
+    
+    # Restart simulation to ensure clean state and proper VCD recording
+    restart
+    
+    # Open VCD file for writing
     open_vcd $vcd_file
 
-    # Log all signals to VCD (hierarchical)
-    # Use top-level scope for better compatibility
-    log_vcd [get_objects -r /*]
+    # Log specific signals to VCD with explicit hierarchy paths
+    # Log testbench signals individually for better control
+    puts "INFO: Logging testbench signals to VCD..."
+    log_vcd /
     
-    # Run simulation for specified time
-    set run_time 1000000ns
-    puts "INFO: Running simulation for $run_time..."
+    # Run simulation for specified time from the beginning
+    # 发送完整一帧数据需要更长时间: 640*512 = 327680 pixels
+    # 每个像素至少需要几个时钟周期，估计需要几毫秒
+    set run_time 5ms
+    puts "INFO: Running simulation for $run_time from time 0..."
     run $run_time
 
+    # Flush VCD before closing
+    flush_vcd
+    
     # Close VCD file
     close_vcd
     puts "INFO: VCD file generated: $vcd_file"
@@ -94,7 +105,7 @@ if {[catch {
 puts "=========================================="
 puts "CLI Simulation Complete!"
 puts "=========================================="
-puts "- Simulation ran for 1000ns"
+puts "- Simulation ran for 5ms"
 puts "- VCD waveform file generated: tb_MF_simulation.vcd"
 puts "- Waveform data saved (if supported)"
 puts "- Check simulation logs for detailed results"
