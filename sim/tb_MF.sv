@@ -33,7 +33,7 @@ module tb_MF();
     // 复位生成
     initial begin
         rst_n = 0;
-        #(CLK_PERIOD*5);
+        #(CLK_PERIOD*2);
         rst_n = 1;
     end
     

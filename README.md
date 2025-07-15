@@ -37,6 +37,7 @@ ip-MeanFilter/
 │   └── tb_MF.sv                     # 仿真测试台
 ├── create_meanfilter_project.tcl    # 项目创建脚本
 ├── build.tcl                        # 构建脚本（综合和仿真）
+├── simulate.tcl                     # 纯命令行仿真脚本
 ├── run_meanfilter.sh                # 一键运行脚本
 ├── TCL_USAGE_GUIDE.md               # TCL 脚本使用指南
 ├── REPEAT_RUN_EXAMPLE.md            # 重复运行示例
@@ -63,7 +64,12 @@ ip-MeanFilter/
 vivado -mode tcl -source create_meanfilter_project.tcl
 
 # 步骤2：构建项目（综合和仿真）
-vivado -mode tcl -source build.tcl
+vivado -mode tcl -source build.tcl                        # 默认批处理模式
+vivado -mode tcl -source build.tcl -tclargs -gui          # GUI模式仿真
+vivado -mode tcl -source build.tcl -tclargs -nosim        # 跳过仿真
+
+# 步骤3：纯命令行仿真（可选）
+vivado -mode tcl -source simulate.tcl                 # 不需要GUI
 ```
 
 #### 方法3：在 Vivado CLI 中重复运行

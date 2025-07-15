@@ -21,8 +21,16 @@
   - 打开现有项目
   - 执行综合
   - 生成综合报告
-  - 启动仿真
+  - 启动仿真（支持批处理模式）
   - 显示构建结果
+
+### 3. `simulate.tcl`
+- **功能**: 纯命令行仿真脚本
+- **包含内容**:
+  - 批处理模式仿真
+  - 不需要 GUI 支持
+  - 自动生成仿真报告
+  - 错误处理和状态检查
 
 ## 使用方法
 
@@ -45,7 +53,20 @@ vivado -mode tcl -source create_meanfilter_project.tcl
 
 #### 步骤 2: 构建项目 (综合和仿真)
 ```bash
+# 默认批处理模式仿真（不需要 GUI）
 vivado -mode tcl -source build.tcl
+
+# GUI 模式仿真
+vivado -mode tcl -source build.tcl -tclargs -gui
+
+# 只运行综合，跳过仿真
+vivado -mode tcl -source build.tcl -tclargs -nosim
+```
+
+#### 步骤 3: 纯命令行仿真（可选）
+```bash
+# 运行纯命令行仿真
+vivado -mode tcl -source simulate.tcl
 ```
 
 在 Vivado CLI 中重复运行构建：
@@ -66,6 +87,9 @@ Vivado% source build.tcl
    ```tcl
    source create_meanfilter_project.tcl
    source build.tcl
+   
+   # 或者运行纯命令行仿真
+   source simulate.tcl
    ```
 
 ## 优势

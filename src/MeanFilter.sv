@@ -100,7 +100,6 @@ module MeanFilter #(
     always_ff @(posedge clk) begin : latency_counter
         if (!rst_n) begin
             latency_cnt <= 'd0;
-            initial_delayed <= 1'b0;
         end
         else begin
             if (s_fire) begin

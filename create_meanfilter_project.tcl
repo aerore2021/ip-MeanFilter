@@ -45,11 +45,11 @@ create_ip -name blk_mem_gen -vendor xilinx.com -library ip -version 8.4 -module_
 # Configure BRAM parameters - Optimized for MeanFilter
 set_property -dict [list \
     CONFIG.Memory_Type {True_Dual_Port_RAM} \
-    CONFIG.Write_Width_A {32} \
+    CONFIG.Write_Width_A {8} \
     CONFIG.Write_Depth_A {8192} \
-    CONFIG.Read_Width_A {32} \
-    CONFIG.Write_Width_B {32} \
-    CONFIG.Read_Width_B {32} \
+    CONFIG.Read_Width_A {8} \
+    CONFIG.Write_Width_B {8} \
+    CONFIG.Read_Width_B {8} \
     CONFIG.Enable_A {Always_Enabled} \
     CONFIG.Enable_B {Use_ENB_Pin} \
     CONFIG.Register_PortA_Output_of_Memory_Primitives {false} \
