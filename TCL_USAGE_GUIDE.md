@@ -15,7 +15,7 @@
   - 设置综合和实现策略
   - 更新编译顺序
 
-### 2. `run_meanfilter_build.tcl`
+### 2. `build.tcl`
 - **功能**: 执行综合和仿真
 - **包含内容**:
   - 打开现有项目
@@ -45,15 +45,27 @@ vivado -mode tcl -source create_meanfilter_project.tcl
 
 #### 步骤 2: 构建项目 (综合和仿真)
 ```bash
-vivado -mode tcl -source run_meanfilter_build.tcl
+vivado -mode tcl -source build.tcl
 ```
 
+在 Vivado CLI 中重复运行构建：
+```tcl
+Vivado% source build.tcl
+# 第一次运行 - 执行综合和仿真
+
+Vivado% source build.tcl
+# 第二次运行 - 重新运行综合和仿真
+# 脚本会自动检测项目状态并智能处理
+
+Vivado% source build.tcl
+# 第三次运行 - 继续重复运行
+```
 ### 在 Vivado GUI 中使用
 1. 打开 Vivado
 2. 在 Tcl Console 中运行：
    ```tcl
    source create_meanfilter_project.tcl
-   source run_meanfilter_build.tcl
+   source build.tcl
    ```
 
 ## 优势

@@ -60,7 +60,7 @@ if [ $? -eq 0 ]; then
     echo "=========================================="
     echo "Step 2: Building MeanFilter project..."
     echo "=========================================="
-    vivado -mode tcl -source run_meanfilter_build.tcl
+    vivado -mode tcl -source build.tcl
 else
     echo "ERROR: Project creation failed!"
     exit 1
