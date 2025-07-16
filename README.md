@@ -1,17 +1,16 @@
-# MeanFilter IP 核项目 - 完整技术文档
+# MeanFilter IP 核项目
 
 ## 项目概述
 
-MeanFilter IP 核是一个基于 SystemVerilog 的均值滤波器 IP 核，专为图像处理应用设计。本项目提供了完整的 Vivado 项目创建、构建和仿真流程，支持命令行自动化操作。
+MeanFilter IP 核是一个基于 SystemVerilog 的 3x3 均值滤波器 IP 核，专为图像处理应用设计。本项目提供了完整的 Vivado 项目创建、构建和仿真流程，支持命令行自动化操作。
 
 ### 主要特性
 
 - **3x3 窗口均值滤波**: 实现图像平滑处理
 - **AXI-Stream 接口**: 标准流接口，便于集成
-- **分离式构建架构**: 支持独立的项目创建和重复构建
+- **自动化构建**: 支持一键运行和分步执行
 - **智能状态管理**: 自动检测项目和综合状态
 - **CLI 友好**: 支持在 Vivado CLI 中重复运行综合和仿真
-- **VCD 波形支持**: 完整的波形记录和调试功能
 
 ## 文件结构
 
@@ -25,7 +24,6 @@ ip-MeanFilter/
 ├── create_meanfilter_project.tcl    # 项目创建脚本
 ├── build.tcl                        # 构建脚本（综合和仿真）
 ├── simulate.tcl                     # 纯命令行仿真脚本
-├── auto_vcd.tcl                     # 自动化VCD记录脚本
 ├── run_meanfilter.sh                # 一键运行脚本
 └── README.md                        # 本文件
 ```
@@ -53,127 +51,7 @@ ip-MeanFilter/
 
 ## 使用方法
 
-### 🚀 快速开始
-
-#### 方法1：一键运行（推荐）
-```bash
-./run_meanfilter.sh
-```
-
-#### 方法2：分步执行
-```bash
-# 步骤1：创建项目
-vivado -mode tcl -source create_meanfilter_project.tcl
-
-# 步骤2：构建项目
-vivado -mode tcl -source build.tcl
-
-# 步骤3：仿真（可选）
-vivado -mode tcl -source simulate.tcl
-```
-
-### 🔧 高级用法
-
-#### 命令行参数支持
-```bash
-# 仅综合（不仿真）
-vivado -mode tcl -source build.tcl -tclargs -nosim
-
-# GUI 仿真模式
-vivado -mode tcl -source build.tcl -tclargs -gui
-
-# 批处理仿真（默认）
-vivado -mode tcl -source build.tcl -tclargs -batch
-```
-
-#### 自动化VCD记录
-```bash
-# 自动记录所有信号
-vivado -mode tcl -source auto_vcd.tcl
-```
-
-## TCL 脚本详解
-
-### 1. create_meanfilter_project.tcl
-**功能**: 创建 MeanFilter 项目和配置
-**包含内容**:
-- 创建新的 Vivado 项目
-- 添加设计文件 (MeanFilter.sv, LineBuf.sv)
-- 添加仿真文件 (tb_MF.sv)
-- 生成和配置 BRAM IP 核
-- 创建约束文件
-- 设置综合和实现策略
-- 更新编译顺序
-
-### 2. build.tcl
-**功能**: 执行综合和仿真
-**包含内容**:
-- 打开现有项目
-- 执行综合
-- 生成综合报告
-- 启动仿真（支持批处理模式）
-- 显示构建结果
-
-### 3. simulate.tcl
-**功能**: 纯命令行仿真脚本
-**包含内容**:
-- 批处理模式仿真
-- 不需要 GUI 支持
-- 自动生成仿真报告
-- 错误处理和状态检查
-
-### 4. auto_vcd.tcl
-**功能**: 自动化VCD波形记录
-**包含内容**:
-- 自动记录所有层次信号
-- 多种记录策略
-- 错误处理和回退机制
-
-## VCD 波形调试
-
-### 问题背景
-在仿真过程中，VCD波形文件可能只显示时钟信号变化，而不显示数据信号变化。
-
-### 解决方案
-
-#### 1. 使用正确的VCD生成脚本
-```tcl
-# 重启仿真确保从时间0开始
-restart
-
-# 打开VCD文件
-open_vcd "simulation.vcd"
-
-# 自动记录所有信号
-log_vcd [get_objects -r /tb_MF/*]
-
-# 运行仿真
-run 5ms
-
-# 关闭VCD文件
-flush_vcd
-close_vcd
-```
-
-#### 2. 时间单位一致性
-确保所有模块都有一致的时间单位声明：
-```systemverilog
-`timescale 1ns / 1ps
-```
-
-#### 3. 波形查看
-使用GTKWave查看生成的VCD文件：
-```bash
-gtkwave tb_MF_simulation.vcd
-```
-
-### 关键信号监控
-- `tb_MF.clk` - 时钟信号
-- `tb_MF.rst_n` - 复位信号
-- `tb_MF.s_axis_tdata` - 输入数据
-- `tb_MF.s_axis_tvalid` - 输入有效信号
-- `tb_MF.m_axis_tdata` - 输出数据
-- `tb_MF.m_axis_tvalid` - 输出有效信号
+### 快速开始
 
 #### 方法1：一键运行（推荐）
 ```bash
@@ -196,7 +74,7 @@ vivado -mode tcl -source build.tcl -tclargs -gui          # GUI模式仿真
 vivado -mode tcl -source build.tcl -tclargs -nosim        # 跳过仿真
 
 # 步骤3：纯命令行仿真（可选）
-vivado -mode tcl -source simulate.tcl                 # 不需要GUI
+vivado -mode tcl -source simulate.tcl                     # 不需要GUI
 ```
 
 #### 方法3：在 Vivado CLI 中重复运行
@@ -209,24 +87,35 @@ Vivado% source build.tcl
 Vivado% source build.tcl  # 可以重复运行
 ```
 
-### 📋 脚本说明
+## TCL 脚本说明
 
-#### `create_meanfilter_project.tcl`
-- 创建 Vivado 项目
+### create_meanfilter_project.tcl
+创建 MeanFilter 项目和配置：
+- 创建新的 Vivado 项目
 - 添加设计文件 (MeanFilter.sv, LineBuf.sv)
 - 添加仿真文件 (tb_MF.sv)
-- 生成 BRAM IP 核 (BRAM_32x8192)
+- 生成和配置 BRAM IP 核
 - 创建约束文件
-- 配置项目设置
+- 设置综合和实现策略
 
-#### `build.tcl`
+### build.tcl
+执行综合和仿真：
+- 打开现有项目
 - 智能项目状态检测
 - 执行综合（支持重复运行）
 - 生成综合报告
 - 启动仿真
 - 错误处理和状态反馈
 
-#### `run_meanfilter.sh`
+### simulate.tcl
+纯命令行仿真脚本：
+- 批处理模式仿真
+- 不需要 GUI 支持
+- 自动生成仿真报告
+- 错误处理和状态检查
+
+### run_meanfilter.sh
+一键运行脚本：
 - 环境清理
 - 依次执行项目创建和构建
 - 错误检查和状态报告
@@ -247,10 +136,6 @@ Vivado% source build.tcl  # 可以重复运行
 - 默认: `xc7a100tcsg324-1`
 - 可在 `create_meanfilter_project.tcl` 中修改
 
-## 详细文档
-
-- **[TCL_USAGE_GUIDE.md](TCL_USAGE_GUIDE.md)**: TCL 脚本详细使用指南
-
 ## 项目输出
 
 ### 综合结果
@@ -259,7 +144,6 @@ Vivado% source build.tcl  # 可以重复运行
 - 综合日志文件
 
 ### 仿真结果
-- 波形文件
 - 仿真日志
 - 测试结果验证
 
@@ -284,7 +168,6 @@ Vivado% source build.tcl  # 可以重复运行
 ✅ GUI仿真: 成功启动
 ✅ 批处理仿真: 成功完成
 ✅ CLI仿真: 成功运行
-✅ VCD波形: 正确记录所有信号变化
 ```
 
 ### 性能指标
@@ -331,23 +214,23 @@ Vivado% source build.tcl  # 可以重复运行
 - 检查约束文件
 - 优化设计资源使用
 
-#### 3. 仿真无波形
+#### 3. 仿真失败
 **可能原因**: 
-- VCD记录时机错误
-- 信号记录范围不正确
-- 时间单位不一致
+- 测试台错误
+- 时钟配置问题
+- 信号连接错误
 
 **解决方案**: 
-- 使用 `auto_vcd.tcl` 脚本
-- 确保时间单位一致
-- 检查信号路径
+- 检查测试台逻辑
+- 验证时钟配置
+- 确认信号连接正确
 
-### 警告和注意事项
+### 设计注意事项
 
 #### 设计警告
-1. **Multi-driven nets**: s_axis_tdata信号存在多驱动
+1. **Multi-driven nets**: 部分信号存在多驱动
 2. **Unconnected ports**: BRAM IP核端口未完全连接
-3. **Index out of bounds**: 数组索引-1越界
+3. **Index out of bounds**: 数组索引越界
 
 #### 建议优化
 1. 修复LineBuf模块的信号连接
@@ -380,7 +263,6 @@ vivado -mode tcl -source build.tcl
 - ✅ 模块化TCL脚本架构
 - ✅ 自动化项目创建
 - ✅ 智能构建管理
-- ✅ VCD波形调试支持
 - ✅ 完整的错误处理
 - ✅ 详细的文档说明
 
@@ -396,15 +278,14 @@ vivado -mode tcl -source build.tcl
 - **Vivado版本**: 2021.1
 - **操作系统**: Windows 10/11
 - **Shell**: Bash
-- **波形查看器**: GTKWave
 
-### 联系方式
+### 项目信息
 - **项目仓库**: GitHub - aerore2021/ip-MeanFilter
 - **分支**: main
-- **更新日期**: 2025年7月15日
+- **最后更新**: 2025年7月16日
 
 ---
 
-**版本**: 2.0  
+**版本**: 2.1  
 **状态**: 已完成并测试验证  
-**最后更新**: 2025年7月15日
+**最后更新**: 2025年7月16日
