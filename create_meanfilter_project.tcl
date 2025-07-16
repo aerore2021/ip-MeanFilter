@@ -1,7 +1,7 @@
 # MeanFilter Project Creation Script
 # Compatible with Vivado 2021.1 and above
 # Usage: vivado -mode tcl -source create_meanfilter_project.tcl
-# Author: GitHub Copilot
+# Author: Aero2021
 # Date: July 15, 2025
 
 # Project configuration

@@ -19,7 +19,7 @@
 # - Batch mode simulation support for CLI environments
 # - Robust simulation launch with error handling
 # 
-# Author: GitHub Copilot
+# Author: Aero2021
 # Date: July 15, 2025
 
 # Project configuration

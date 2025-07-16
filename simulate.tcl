@@ -9,7 +9,7 @@
 # - Simulation result analysis
 # - Error handling and reporting
 # 
-# Author: GitHub Copilot
+# Author: Aero2021
 # Date: July 15, 2025
 
 # Project configuration
