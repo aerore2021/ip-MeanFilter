@@ -46,7 +46,7 @@ create_ip -name blk_mem_gen -vendor xilinx.com -library ip -version 8.4 -module_
 set_property -dict [list \
     CONFIG.Memory_Type {Simple_Dual_Port_RAM} \
     CONFIG.Write_Width_A {8} \
-    CONFIG.Write_Depth_A {8192} \
+    CONFIG.Write_Depth_A {32} \
     CONFIG.Read_Width_B {8} \
     CONFIG.Enable_A {Always_Enabled} \
     CONFIG.Enable_B {Use_ENB_Pin} \

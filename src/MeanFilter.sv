@@ -176,24 +176,36 @@ module AdderTree #(
         end
     endfunction
 
-    logic [DATA_OUT_WIDTH-1:0] sum_data[0:SUM_TOTAL_STAGES-1];
+    logic [DATA_OUT_WIDTH-1:0] sum_data[0:DATA_NUM-1][0:SUM_TOTAL_STAGES-1];
+    
+    // 第0级直接连接输入数据, range is not allowed in a prefix
+    generate
+        for (genvar i = 0; i < DATA_NUM; i++) begin
+            assign sum_data[i][0] = data_in[i];
+        end
+    endgenerate
+    
+    // 如果只有一级，直接输出；否则进行加法树计算
+    generate
+        if (SUM_TOTAL_STAGES > 1) begin
+            always_ff @(posedge clk) begin
+                for (int sum_stages = 1; sum_stages < SUM_TOTAL_STAGES; sum_stages++) begin // 从第1级开始计算
+                    integer number;
+                    integer number_paired;
+                    integer number_single;
+                    number = get_pruned_number(sum_stages, SUM_TOTAL_STAGES, DATA_NUM);
+                    number_paired = number / 2;
+                    number_single = number % 2;
 
-    always_ff @(posedge clk) begin
-        for (int sum_stages = 0; sum_stages < SUM_TOTAL_STAGES; sum_stages++) begin // 每一级的计算
-            integer number;
-            integer number_paired;
-            integer number_single;
-            number = get_pruned_number(sum_stages, SUM_TOTAL_STAGES, DATA_NUM);
-            number_paired = number / 2;
-            number_single = number % 2;
-
-            for (int i = 0; i < number_paired; i++) begin
-                sum_data[sum_stages] <= sum_data[2*i]+ sum_data[2*i+1];
-            end
-            for (int i = 0; i < number_single; i++) begin
-                sum_data[sum_stages] <= sum_data[2*number_paired+i];
+                    for (int i = 0; i < number_paired; i++) begin
+                        sum_data[i][sum_stages] <= sum_data[2*i][sum_stages-1] + sum_data[2*i+1][sum_stages-1];
+                    end
+                    for (int i = 0; i < number_single; i++) begin
+                        sum_data[number_paired+i][sum_stages] <= sum_data[2*number_paired+i][sum_stages-1];
+                    end
+                end
             end
         end
-    end
-    assign data_out = sum_data[SUM_TOTAL_STAGES-1];
+    endgenerate
+    assign data_out = sum_data[0][SUM_TOTAL_STAGES-1];
 endmodule
