@@ -30,7 +30,7 @@ module MeanFilter #(
     logic [DATA_WIDTH-1:0] data_linebuf [0:WINDOW_SIZE-1];
     assign data_linebuf[0] = s_axis_tdata;
     generate
-        for (genvar linebuf_idx = 0; linebuf_idx < WINDOW_SIZE; linebuf_idx++) begin: LineBuf_gen
+        for (genvar linebuf_idx = 0; linebuf_idx < WINDOW_SIZE - 1; linebuf_idx++) begin: LineBuf_gen
             LineBuf #(
                         .DATA_WIDTH(DATA_WIDTH),
                         .LATENCY(FRAME_WIDTH)
